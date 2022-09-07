@@ -7,12 +7,14 @@ class PlayerItem extends StatelessWidget {
       required this.image,
       required this.name,
       this.userItem = false,
-      required this.onTap})
+      required this.onTap,
+      this.myAccount = false})
       : super(key: key);
   final ImageProvider? image;
   final String name;
   final bool userItem;
   final VoidCallback onTap;
+  final bool myAccount;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,7 @@ class PlayerItem extends StatelessWidget {
                         : const SizedBox(),
                   ),
                 ),
-                if (!userItem)
+                if (!userItem && !myAccount)
                   Align(
                     alignment: Alignment.topRight,
                     child: InkWell(

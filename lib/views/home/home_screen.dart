@@ -40,6 +40,7 @@ class HomePage extends StatelessWidget {
                                 .asMap()
                                 .containsKey(index)
                             ? PlayerItem(
+                                myAccount: index == 0,
                                 onTap: () {
                                   userCubit.addPlayer(UserCubit.get(context)
                                       .palyersList[index]);
