@@ -6,11 +6,13 @@ class PlayerItem extends StatelessWidget {
       {Key? key,
       required this.image,
       required this.name,
-      this.userItem = false})
+      this.userItem = false,
+      required this.onTap})
       : super(key: key);
   final ImageProvider? image;
   final String name;
   final bool userItem;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -20,25 +22,52 @@ class PlayerItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CircleAvatar(
-            radius: 38,
-            backgroundColor: Colors.black,
-            child: CircleAvatar(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-              radius: 36,
-              backgroundImage: image,
-              onBackgroundImageError: image != null
-                  ? (exception, stackTrace) {
-                      if (kDebugMode) print('Erroe has occured');
-                    }
-                  : null,
-              child: image == null
-                  ? const Icon(
-                      Icons.person_add,
-                      size: 32,
-                    )
-                  : const SizedBox(),
+          Container(
+            height: 76,
+            width: 76,
+            child: Stack(
+              children: [
+                CircleAvatar(
+                  radius: 38,
+                  backgroundColor: Colors.black,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    radius: 36,
+                    backgroundImage: image,
+                    onBackgroundImageError: image != null
+                        ? (exception, stackTrace) {
+                            if (kDebugMode) print('Erroe has occured');
+                          }
+                        : null,
+                    child: image == null
+                        ? const Icon(
+                            Icons.person_add,
+                            size: 32,
+                          )
+                        : const SizedBox(),
+                  ),
+                ),
+                if (!userItem)
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: InkWell(
+                      onTap: () {
+                        onTap();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black),
+                            color: Colors.white,
+                            shape: BoxShape.circle),
+                        child: const Icon(
+                          Icons.clear,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
           const SizedBox(height: 10),

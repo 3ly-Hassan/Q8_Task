@@ -23,7 +23,12 @@ class UserItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          PlayerItem(image: image, name: name, userItem: true),
+          PlayerItem(
+            image: image,
+            name: name,
+            userItem: true,
+            onTap: () {},
+          ),
           const SizedBox(width: 10),
           Text(
             name,

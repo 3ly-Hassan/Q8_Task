@@ -40,13 +40,21 @@ class HomePage extends StatelessWidget {
                                 .asMap()
                                 .containsKey(index)
                             ? PlayerItem(
+                                onTap: () {
+                                  userCubit.addPlayer(UserCubit.get(context)
+                                      .palyersList[index]);
+                                },
                                 image: NetworkImage(
                                     userCubit.palyersList[index].image ??
                                         unKnownImage),
                                 name:
                                     '${userCubit.palyersList[index].firstName} ${userCubit.palyersList[index].lastName}',
                               )
-                            : const PlayerItem(image: null, name: '');
+                            : PlayerItem(
+                                image: null,
+                                name: '',
+                                onTap: () {},
+                              );
                       },
                       itemCount: 10,
                     )),
