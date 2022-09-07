@@ -58,6 +58,9 @@ class UserCubit extends Cubit<UserState> {
   }
 
   void addPlayer(User user) {
+    if (user.firstName == 'Test') {
+      return;
+    }
     palyersList.contains(user)
         ? palyersList.remove(user)
         : palyersList.add(user);
