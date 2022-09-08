@@ -24,97 +24,124 @@ class HomePage extends StatelessWidget {
           style: Theme.of(context).textTheme.headline4,
         ),
       ),
-      body: SingleChildScrollView(
-        child: BlocBuilder<UserCubit, UserState>(
-          builder: (context, state) {
-            return Column(
-              children: [
-                SizedBox(
-                    height: 150,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return UserCubit.get(context)
-                                .palyersList
-                                .asMap()
-                                .containsKey(index)
-                            ? PlayerItem(
-                                myAccount: index == 0,
-                                onTap: () {
-                                  userCubit.addPlayer(UserCubit.get(context)
-                                      .palyersList[index]);
-                                },
-                                image: NetworkImage(
-                                    userCubit.palyersList[index].image ??
-                                        unKnownImage),
-                                name:
-                                    '${userCubit.palyersList[index].firstName} ${userCubit.palyersList[index].lastName}',
-                              )
-                            : PlayerItem(
-                                image: null,
-                                name: '',
-                                onTap: () {},
-                              );
-                      },
-                      itemCount: 10,
-                    )),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: TextFormField(
-                    controller: userCubit.searchController,
-                    onEditingComplete: () {
-                      if (userCubit.searchController.text.isNotEmpty) {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        userCubit
-                            .search(userCubit.searchController.text.trim());
-                      }
-                    },
-                    onChanged: (val) {
-                      userCubit.showClear();
-                    },
-                    textInputAction: TextInputAction.search,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.search),
-                      suffixIcon: userCubit.searchController.text.isNotEmpty
-                          ? InkWell(
+      body: BlocBuilder<UserCubit, UserState>(
+        builder: (context, state) {
+          return Column(
+            children: [
+              SizedBox(
+                  height: 150,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return UserCubit.get(context)
+                              .palyersList
+                              .asMap()
+                              .containsKey(index)
+                          ? PlayerItem(
+                              myAccount: index == 0,
                               onTap: () {
-                                userCubit.clearTheField();
+                                userCubit.addPlayer(
+                                    UserCubit.get(context).palyersList[index]);
                               },
-                              child: const Icon(Icons.clear))
-                          : null,
-                      labelText: 'Search by player name',
-                      hintText: 'Search by player name',
+                              image: NetworkImage(
+                                  userCubit.palyersList[index].image ??
+                                      unKnownImage),
+                              name:
+                                  '${userCubit.palyersList[index].firstName} ${userCubit.palyersList[index].lastName}',
+                            )
+                          : PlayerItem(
+                              image: null,
+                              name: '',
+                              onTap: () {},
+                            );
+                    },
+                    itemCount: 10,
+                  )),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextFormField(
+                  controller: userCubit.searchController,
+                  onEditingComplete: () {
+                    if (userCubit.searchController.text.isNotEmpty) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      userCubit.search(userCubit.searchController.text.trim());
+                    }
+                  },
+                  onChanged: (val) {
+                    userCubit.showClear();
+                  },
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: userCubit.searchController.text.isNotEmpty
+                        ? InkWell(
+                            onTap: () {
+                              userCubit.clearTheField();
+                            },
+                            child: const Icon(Icons.clear))
+                        : null,
+                    labelText: 'Search by player name',
+                    hintText: 'Search by player name',
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                  child: userCubit.searchList.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: userCubit.searchList.length,
+                          physics: const BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            var user = userCubit.searchList[index];
+                            return UserItem(
+                              image: NetworkImage(user.image ?? unKnownImage),
+                              name: '${user.firstName} ${user.lastName}',
+                              onTap: () {
+                                userCubit.addPlayer(user);
+                              },
+                              buttonText: userCubit.palyersList.contains(user)
+                                  ? 'Remove'
+                                  : 'Add',
+                              color: userCubit.palyersList.contains(user)
+                                  ? Colors.red
+                                  : Theme.of(context).primaryColor,
+                            );
+                          },
+                        )
+                      : const SizedBox(),
+                ),
+              ),
+              SizedBox(
+                width: double.maxFinite,
+                child: Card(
+                  color: Colors.white,
+                  elevation: 40,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 10),
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Theme.of(context).primaryColor),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ))),
+                      child: const Text(
+                        'Continue',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 25),
-                      ...userCubit.searchList
-                          .map((e) => UserItem(
-                                color: userCubit.palyersList.contains(e)
-                                    ? Colors.red
-                                    : Theme.of(context).primaryColor,
-                                image: NetworkImage(e.image ?? unKnownImage),
-                                name: '${e.firstName} ${e.lastName}',
-                                onTap: () {
-                                  userCubit.addPlayer(e);
-                                },
-                                buttonText: userCubit.palyersList.contains(e)
-                                    ? 'Remove'
-                                    : 'Add',
-                              ))
-                          .toList()
-                    ],
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
+              )
+            ],
+          );
+        },
       ),
     );
   }
